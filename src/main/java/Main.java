@@ -34,17 +34,33 @@ public class Main {
                 .map(c -> new CityLanguage().convertToCity(c,languages))
                 .collect(Collectors.toList());
 
-        for(CityLanguage c: cityLanguages){
-            System.out.printf("%5d\t%30s\t%6s\t%20s\t%8d\t",
-                    c.getId(),
-                    c.getName(),
-                    c.getCountryCode(),
-                    c.getDistrict(),
-                    c.getPopulation());
-            for(Language l:c.getLanguages()){
-                System.out.printf(" %10s\t",l.getLanguage());
-            }
-            System.out.println();
-        }
+        System.out.println(cityLanguages.stream()
+                .filter(c -> {
+                    int count = 0;
+                    for(Language l:c.getLanguages()){
+                        if(l.isOfficial()){
+                            count++;
+                        }
+                    }
+                    if(count >= 4){
+                        return true;
+                    }
+                    return false;
+                })
+                .map(c -> c.getName())
+                .collect(Collectors.joining(
+                        ", ", "Перечень городов, в которых более 4 официальных языков : ", ".")));
+
+        int citiCount = (int) cityLanguages.stream()
+                .filter(c ->{
+                    for(Language l: c.getLanguages()){
+                        if(l.getLanguage().contains("Russian") && l.isOfficial() == false){
+                            return true;
+                        }
+                    }
+                    return false;
+                }).count();
+
+        System.out.printf("Количество городов, в которых русский язык является не официальным - %d", citiCount);
     }
 }
