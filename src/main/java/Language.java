@@ -1,6 +1,13 @@
+import com.opencsv.bean.CsvBindByName;
+
 public class Language {
+    @CsvBindByName(column = "CountryCode")
     private String countryCode;
+
+    @CsvBindByName(column = "Language")
     private String language;
+
+    @CsvBindByName(column = "IsOfficial")
     private boolean isOfficial;
 
     public String getCountryCode() {
@@ -13,16 +20,5 @@ public class Language {
 
     public boolean isOfficial() {
         return isOfficial;
-    }
-
-    public Language convertToLanguage(String[] text){
-        this.countryCode = text[0];
-        this.language = text[1];
-        if(text[2].contains("TRUE")) {
-            this.isOfficial = true;
-        }else{
-            this.isOfficial = false;
-        }
-        return this;
     }
 }

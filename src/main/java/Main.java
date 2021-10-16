@@ -1,34 +1,21 @@
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.exceptions.CsvException;
+import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main {
-    public static void main(String[] args) throws IOException, CsvException {
+    public static void main(String[] args) throws IOException {
 
-        CSVReader reader = new CSVReaderBuilder(
-                new FileReader("src/main/resources/city.csv"))
-                .withSkipLines(1)
-                .build();
+        List<Language> languages = new CsvToBeanBuilder(new FileReader(
+                "src/main/resources/countrylanguage.csv"))
+                .withType(Language.class)
+                .build()
+                .parse();
 
-        List<String[]> myEntries = reader.readAll();
-
-        List<City> city = myEntries.stream()
-                .map(c -> new City().convertToCity(c))
-                .collect(Collectors.toList());
-
-        reader = new CSVReaderBuilder(
-                new FileReader("src/main/resources/countrylanguage.csv"))
-                .withSkipLines(1)
-                .build();
-
-        myEntries = reader.readAll();
-
-        List<Language> languages = myEntries.stream()
-                .map(l -> new Language().convertToLanguage(l))
-                .collect(Collectors.toList());
+        List<City> city = new CsvToBeanBuilder(new FileReader("src/main/resources/city.csv"))
+                .withType(City.class)
+                .build()
+                .parse();
 
         List<CityLanguage> cityLanguages = city.stream()
                 .map(c -> new CityLanguage().convertToCity(c,languages))
@@ -49,7 +36,7 @@ public class Main {
                 })
                 .map(c -> c.getName())
                 .collect(Collectors.joining(
-                        ", ", "Перечень городов, в которых более 4 официальных языков : ", ".")));
+                        ", ", "List of cities with more than four official languages : ", ".")));
 
         int citiCount = (int) cityLanguages.stream()
                 .filter(c ->{
@@ -61,6 +48,6 @@ public class Main {
                     return false;
                 }).count();
 
-        System.out.printf("Количество городов, в которых русский язык является не официальным - %d", citiCount);
+        System.out.printf("The number of cities in which Russian is an unofficial language - %d", citiCount);
     }
 }

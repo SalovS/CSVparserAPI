@@ -1,10 +1,28 @@
-import java.nio.charset.StandardCharsets;
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvNumber;
+import com.opencsv.bean.CsvNumbers;
 
 public class City {
+
+    @CsvBindByName(column = "ID")
+    @CsvNumbers({
+            @CsvNumber(value = "0")
+    })
     private int id;
+
+    @CsvBindByName(column = "Name")
     private String name;
+
+    @CsvBindByName(column = "CountryCode")
     private String countryCode;
+
+    @CsvBindByName(column = "District")
     private String district;
+
+    @CsvBindByName(column = "Population")
+    @CsvNumbers({
+            @CsvNumber(value = "0")
+    })
     private long population;
 
     public int getId() {
@@ -25,14 +43,5 @@ public class City {
 
     public long getPopulation() {
         return population;
-    }
-
-    public City convertToCity(String[] arr){
-        this.id = Integer.parseInt(arr[0]);
-        this.name = arr[1];
-        this.countryCode = arr[2];
-        this.district = arr[3];
-        this.population = Long.parseLong(arr[4]);
-        return this;
     }
 }
