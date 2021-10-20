@@ -1,6 +1,6 @@
 import com.opencsv.bean.CsvBindByName;
 
-public class Language {
+public class Language{
     @CsvBindByName(column = "CountryCode")
     private String countryCode;
 

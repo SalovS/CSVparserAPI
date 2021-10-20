@@ -1,35 +1,29 @@
 import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Main {
+public class Main<T extends Object> {
     public static void main(String[] args) throws IOException {
 
-        List<Language> languages = new CsvToBeanBuilder(new FileReader(
-                "src/main/resources/countrylanguage.csv"))
-                .withType(Language.class)
-                .build()
-                .parse();
+        List<Language> languages = parser("src/main/resources/countrylanguage.csv", Language.class);
 
-        List<City> city = new CsvToBeanBuilder(new FileReader("src/main/resources/city.csv"))
-                .withType(City.class)
-                .build()
-                .parse();
+        List<City> city = parser("src/main/resources/city.csv", City.class);
 
         List<CityLanguage> cityLanguages = city.stream()
-                .map(c -> new CityLanguage().convertToCity(c,languages))
+                .map(c -> new CityLanguage().convertToCity(c, languages))
                 .collect(Collectors.toList());
 
         System.out.println(cityLanguages.stream()
                 .filter(c -> {
                     int count = 0;
-                    for(Language l:c.getLanguages()){
-                        if(l.isOfficial()){
+                    for (Language l : c.getLanguages()) {
+                        if (l.isOfficial()) {
                             count++;
                         }
                     }
-                    if(count >= 4){
+                    if (count >= 4) {
                         return true;
                     }
                     return false;
@@ -39,9 +33,9 @@ public class Main {
                         ", ", "List of cities with more than four official languages : ", ".")));
 
         int citiCount = (int) cityLanguages.stream()
-                .filter(c ->{
-                    for(Language l: c.getLanguages()){
-                        if(l.getLanguage().contains("Russian") && l.isOfficial() == false){
+                .filter(c -> {
+                    for (Language l : c.getLanguages()) {
+                        if (l.getLanguage().contains("Russian") && l.isOfficial() == false) {
                             return true;
                         }
                     }
@@ -49,5 +43,19 @@ public class Main {
                 }).count();
 
         System.out.printf("The number of cities in which Russian is an unofficial language - %d", citiCount);
+    }
+
+    public static <T> List<T> parser(String address, Class<T> obj) {
+        List answer = new ArrayList<>();
+        try {
+            answer = new CsvToBeanBuilder(new FileReader(
+                    address))
+                    .withType(obj)
+                    .build()
+                    .parse();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return answer;
     }
 }

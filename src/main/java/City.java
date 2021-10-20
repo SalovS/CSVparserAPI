@@ -2,7 +2,7 @@ import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvNumber;
 import com.opencsv.bean.CsvNumbers;
 
-public class City {
+public class City{
 
     @CsvBindByName(column = "ID")
     @CsvNumbers({
