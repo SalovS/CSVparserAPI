@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Main<T extends Object> {
+public class Main {
     public static void main(String[] args) throws IOException {
 
         List<Language> languages = parser("src/main/resources/countrylanguage.csv", Language.class);
